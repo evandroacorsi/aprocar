@@ -1,34 +1,57 @@
 import AnimatedSection from "@/components/AnimatedSection";
-import { FileText, Download, ExternalLink } from "lucide-react";
+import PageHero from "@/components/PageHero";
+import transparenciaHero from "@/assets/transparencia2.jpg";
+import { BookOpen, ExternalLink, FileText, Lock } from "lucide-react";
 
 const documentos = [
-  { nome: "Balanço Anual", desc: "Prestação de contas financeira da instituição" },
-  { nome: "Relatório de Atividades", desc: "Resumo das ações realizadas no período" },
-  { nome: "Estatuto Social", desc: "Documento constitutivo da APROCAR" },
-  { nome: "Ata de Eleição e Posse", desc: "Registro da eleição da diretoria" },
-  { nome: "Cartão CNPJ", desc: "Cadastro Nacional da Pessoa Jurídica" },
+  {
+    nome: "Cartão CNPJ",
+    desc: "Cadastro Nacional da Pessoa Jurídica",
+    href: "/docs/CARTÃO CNPJ.pdf",
+  },
+  {
+    nome: "Ata de Alteração do Estatuto",
+    desc: "Documento institucional registrado",
+    href: "/docs/ATA DE ALTERAÇÃO ESTATUTO 06.2025.pdf",
+  },
+  {
+    nome: "Balanço Patrimonial e DRE 2025",
+    desc: "Disponibilização pendente da versão com CPFs tarjados",
+  },
+  {
+    nome: "Ata de Eleição 2025/2026",
+    desc: "Disponibilização pendente da versão com CPFs tarjados",
+  },
+];
+
+const fundamentosLegais = [
+  {
+    titulo: "Lei de Acesso à Informação",
+    lei: "Lei nº 12.527/2011",
+    desc: "Esta lei aplica-se às entidades privadas sem fins lucrativos que recebem recursos públicos para a realização de ações de interesse público.",
+    href: "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2011/lei/l12527.htm",
+  },
+  {
+    titulo: "Marco Regulatório (MROSC)",
+    lei: "Lei nº 13.019/2014",
+    desc: "Estabelece o regime jurídico das parcerias entre a administração pública e as organizações da sociedade civil (OSC).",
+    href: "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2014/lei/l13019.htm",
+  },
 ];
 
 const Transparencia = () => {
   return (
-    <main className="pt-20">
-      <section className="section-padding">
-        <div className="container-wide">
-          <AnimatedSection>
-            <p className="text-sm uppercase tracking-[0.3em] text-muted-foreground mb-6">
-              Transparência
-            </p>
-            <h1 className="editorial-title text-foreground max-w-3xl mb-8">
-              Compromisso com a<br />
-              <span className="accent-blue-text italic">transparência</span>
-            </h1>
-            <p className="editorial-body max-w-2xl">
-              A APROCAR preza pela transparência em todas as suas ações.
-              Aqui você encontra documentos institucionais e informações sobre nossa gestão.
-            </p>
-          </AnimatedSection>
-        </div>
-      </section>
+    <main className="pt-24">
+      <PageHero
+        eyebrow="Transparência"
+        title="Compromisso com a"
+        highlight="transparência"
+        description="A APROCAR preza pela transparência em todas as suas ações. Aqui você encontra documentos institucionais e informações sobre nossa gestão."
+        image={transparenciaHero}
+        imageAlt="Documentos de transparência da APROCAR"
+        accentClass="accent-blue-text"
+        imagePosition="center"
+      />
 
       {/* Documents */}
       <section className="section-padding bg-secondary">
@@ -42,38 +65,85 @@ const Transparencia = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl">
             {documentos.map((doc, i) => (
               <AnimatedSection key={doc.nome} delay={i * 0.05}>
-                <a
-                  href="https://drive.google.com/drive/folders/1V3GvUKCudOnFWFvEDkHuuXH6KQWaFOiB"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-4 p-6 rounded-2xl bg-card border border-border hover:shadow-lg transition-all duration-300 group"
+                <div
+                  className={`soft-card flex items-center gap-4 p-6 transition-all duration-300 group ${
+                    doc.href ? "hover:shadow-lg" : "opacity-80"
+                  }`}
                 >
                   <div className="w-12 h-12 rounded-xl accent-blue-bg flex items-center justify-center shrink-0">
-                    <FileText size={20} className="accent-blue-text" />
+                    {doc.href ? (
+                      <FileText size={20} className="accent-blue-text" />
+                    ) : (
+                      <Lock size={20} className="accent-blue-text" />
+                    )}
                   </div>
                   <div className="flex-1">
                     <p className="text-foreground font-medium">{doc.nome}</p>
-                    <p className="text-muted-foreground text-sm">{doc.desc}</p>
+                    <p className="text-base text-muted-foreground">{doc.desc}</p>
                   </div>
-                  <ExternalLink size={16} className="text-muted-foreground group-hover:text-foreground transition-colors" />
-                </a>
+                  {doc.href ? (
+                    <a
+                      href={doc.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-base font-medium text-foreground hover:underline"
+                    >
+                      Abrir
+                      <ExternalLink size={16} />
+                    </a>
+                  ) : (
+                    <span className="text-sm font-medium text-muted-foreground">
+                      Em revisão
+                    </span>
+                  )}
+                </div>
               </AnimatedSection>
             ))}
           </div>
+        </div>
+      </section>
 
+      {/* Legal basis */}
+      <section className="bg-background py-20 md:py-24 lg:py-28">
+        <div className="container-wide">
           <AnimatedSection>
-            <div className="mt-12">
-              <a
-                href="https://drive.google.com/drive/folders/1V3GvUKCudOnFWFvEDkHuuXH6KQWaFOiB"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-foreground text-primary-foreground text-sm font-medium tracking-wide hover:opacity-90 transition-all duration-300 rounded-full"
-              >
-                <Download size={16} />
-                Acessar pasta de documentos
-              </a>
+            <div className="mb-12 max-w-3xl">
+              <p className="mb-6 text-sm uppercase tracking-[0.3em] text-muted-foreground">
+                Transparência pública
+              </p>
+              <h2 className="editorial-subtitle text-foreground">
+                Fundamentação Legal
+              </h2>
             </div>
           </AnimatedSection>
+
+          <div className="grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-2">
+            {fundamentosLegais.map((item, i) => (
+              <AnimatedSection key={item.lei} delay={i * 0.08}>
+                <article className="soft-card flex h-full flex-col p-8 transition-all duration-300 hover:shadow-xl">
+                  <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl accent-blue-bg">
+                    <BookOpen size={22} className="accent-blue-text" />
+                  </div>
+                  <h3 className="mb-2 text-display text-2xl font-semibold text-foreground">
+                    {item.titulo}
+                  </h3>
+                  <p className="mb-5 text-base font-semibold text-primary">{item.lei}</p>
+                  <p className="mb-8 flex-1 text-base leading-relaxed text-muted-foreground">
+                    {item.desc}
+                  </p>
+                  <a
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-base font-semibold text-foreground transition-all duration-300 hover:gap-3"
+                  >
+                    Ler lei completa
+                    <ExternalLink size={16} />
+                  </a>
+                </article>
+              </AnimatedSection>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -81,7 +151,7 @@ const Transparencia = () => {
       <section className="section-padding">
         <div className="container-narrow">
           <AnimatedSection>
-            <div className="p-10 md:p-16 rounded-3xl accent-yellow-bg text-center">
+            <div className="soft-card accent-yellow-bg p-10 text-center md:p-16">
               <h2 className="editorial-subtitle text-foreground mb-6">
                 Informações institucionais
               </h2>

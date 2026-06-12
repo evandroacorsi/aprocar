@@ -1,36 +1,23 @@
 import { Link } from "react-router-dom";
 import AnimatedSection from "@/components/AnimatedSection";
-import donationImg from "@/assets/donation.jpg";
+import PageHero from "@/components/PageHero";
+import donationHero from "@/assets/doações.jpg";
 import { Heart, FileText, Receipt, ArrowRight } from "lucide-react";
 
 const Doacoes = () => {
   return (
-    <main className="pt-20">
-      <section className="section-padding">
-        <div className="container-wide">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-            <AnimatedSection>
-              <p className="text-sm uppercase tracking-[0.3em] text-muted-foreground mb-6">
-                Como ajudar
-              </p>
-              <h1 className="editorial-title text-foreground mb-8">
-                Cada gesto de<br />
-                <span className="accent-yellow-text italic">generosidade</span> conta
-              </h1>
-              <p className="editorial-body">
-                Existem diversas formas de apoiar a APROCAR e contribuir com a proteção de
-                crianças e adolescentes. Conheça as opções e escolha a que melhor se encaixa
-                para você.
-              </p>
-            </AnimatedSection>
-            <AnimatedSection delay={0.2}>
-              <div className="image-editorial-rounded">
-                <img src={donationImg} alt="Doação" loading="lazy" className="w-full h-[400px] object-cover" />
-              </div>
-            </AnimatedSection>
-          </div>
-        </div>
-      </section>
+    <main className="pt-24">
+      <PageHero
+        eyebrow="Como ajudar"
+        title="Cada gesto de"
+        highlight="generosidade"
+        suffix="conta"
+        description="Existem diversas formas de apoiar a APROCAR e contribuir com a proteção de crianças e adolescentes. Conheça as opções e escolha a que melhor se encaixa para você."
+        image={donationHero}
+        imageAlt="Apoio e doações para a APROCAR"
+        accentClass="accent-yellow-text"
+        imagePosition="center"
+      />
 
       {/* Nota Fiscal */}
       <section className="section-padding accent-yellow-bg">
@@ -68,7 +55,7 @@ const Doacoes = () => {
             </AnimatedSection>
 
             <AnimatedSection delay={0.2}>
-              <div className="p-8 md:p-12 rounded-3xl bg-card border border-border">
+              <div className="soft-card p-8 md:p-12">
                 <h3 className="text-display text-xl font-semibold text-foreground mb-6">
                   Como funciona?
                 </h3>
@@ -97,7 +84,7 @@ const Doacoes = () => {
       <section className="section-padding">
         <div className="container-narrow">
           <AnimatedSection>
-            <div className="p-10 md:p-16 rounded-3xl accent-blue-bg text-center">
+            <div className="soft-card accent-blue-bg p-10 md:p-16 text-center">
               <div className="w-16 h-16 rounded-2xl bg-card flex items-center justify-center mx-auto mb-8">
                 <FileText size={28} className="accent-blue-text" />
               </div>
@@ -107,7 +94,7 @@ const Doacoes = () => {
               <p className="editorial-body max-w-2xl mx-auto mb-6">
                 No dia 23/03/2026, começa a Declaração do Imposto de Renda. Quem declara pode
                 destinar parte do imposto, <strong className="text-foreground">sem pagar nada a mais</strong>,
-                para o Fundo da Criança e do Adolescente e para o Fundo do Idoso de Rancharia.
+                para o Fundo da Criança e do Adolescente de Rancharia.
               </p>
               <div className="p-6 rounded-2xl bg-card border border-border max-w-xl mx-auto mb-8">
                 <p className="text-foreground font-medium">
@@ -123,21 +110,23 @@ const Doacoes = () => {
       </section>
 
       {/* CTA */}
-      <section className="section-padding bg-foreground">
+      <section className="flex min-h-[50svh] items-center bg-foreground py-16 text-primary-foreground md:min-h-[calc(100svh-24rem)] md:py-20">
         <div className="container-narrow text-center">
           <AnimatedSection>
-            <Heart size={40} className="accent-pink-text mx-auto mb-8" />
-            <h2 className="editorial-title text-primary-foreground mb-8">
+            <div className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-full bg-white/10">
+              <Heart size={40} className="accent-pink-text" />
+            </div>
+            <h2 className="hero-title mx-auto mb-8 max-w-4xl text-primary-foreground">
               Toda ajuda faz a diferença
             </h2>
-            <p className="text-primary-foreground/70 text-lg mb-12 max-w-xl mx-auto">
+            <p className="mx-auto mb-12 max-w-2xl text-lg leading-relaxed text-primary-foreground/78 md:text-xl">
               Entre em contato para saber mais sobre como você pode contribuir com a APROCAR.
             </p>
             <a
               href="https://wa.me/5518997319946"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-accent-yellow text-foreground text-sm font-medium tracking-wide hover:opacity-90 transition-all duration-300 rounded-full"
+              className="inline-flex items-center gap-2 rounded-full bg-accent-yellow px-8 py-4 text-base font-semibold tracking-wide text-foreground transition-all duration-300 hover:opacity-90"
             >
               Fale conosco no WhatsApp
               <ArrowRight size={16} />

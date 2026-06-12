@@ -10,6 +10,8 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+.env
+docs-pendentes-redacao/
 *.local
 
 # Editor directories and files

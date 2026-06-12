@@ -1,38 +1,26 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Heart, Shield, Users, Home, Star, Calendar } from "lucide-react";
+import {
+  ArrowRight,
+  Calendar,
+  FileText,
+  Heart,
+  Home,
+  ImageOff,
+  MessageCircle,
+  Newspaper,
+  Shield,
+  Star,
+  Users,
+} from "lucide-react";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import AnimatedSection from "@/components/AnimatedSection";
+import { fetchPublicNews, type NewsSummary } from "@/lib/news";
 import heroBg from "@/assets/hero-bg.jpg";
 import aboutImg from "@/assets/about-activities.jpg";
 import donationImg from "@/assets/donation.jpg";
 import fachada from "@/assets/fachada.jpeg";
-
-const noticias = [
-  {
-    id: 1,
-    title: "Declaração do Imposto de Renda 2026",
-    excerpt: "A partir de 23/03/2026, você pode destinar parte do seu imposto para o Fundo da Criança e do Adolescente de Rancharia.",
-    date: "Março 2026",
-    tag: "Importante",
-    tagColor: "accent-yellow-bg",
-  },
-  {
-    id: 2,
-    title: "APROCAR celebra mais de 20 anos de atuação",
-    excerpt: "Desde 2001, a instituição se consolidou como referência local na proteção e acolhimento de crianças e adolescentes.",
-    date: "2024",
-    tag: "Institucional",
-    tagColor: "accent-blue-bg",
-  },
-  {
-    id: 3,
-    title: "Doe sua nota fiscal e ajude a APROCAR",
-    excerpt: "Saiba como a doação de notas fiscais pode gerar recursos para a instituição sem nenhum custo para você.",
-    date: "2024",
-    tag: "Doações",
-    tagColor: "accent-pink-bg",
-  },
-];
+import logo from "@/assets/logo-remove-bg.png";
 
 const valores = [
   { icon: Heart, title: "Respeito", desc: "Reconhecemos a singularidade e a história de cada criança e adolescente.", color: "accent-pink" },
@@ -43,14 +31,69 @@ const valores = [
 ];
 
 const sitemapLinks = [
-  { label: "Sobre a APROCAR", path: "/sobre", desc: "História, missão, valores e equipe" },
-  { label: "Doações", path: "/doacoes", desc: "Formas de contribuir e apoiar" },
-  { label: "Transparência", path: "/transparencia", desc: "Documentos e prestação de contas" },
-  { label: "Notícias", path: "/noticias", desc: "Atualizações e novidades" },
-  { label: "Contato", path: "/contato", desc: "Fale conosco e localização" },
+  {
+    label: "Sobre a APROCAR",
+    path: "/sobre",
+    desc: "História, missão, valores, diretoria e equipe.",
+    icon: Home,
+    bgClass: "accent-blue-bg",
+    iconClass: "accent-blue-text",
+    borderClass: "hover:border-accent-blue/45",
+  },
+  {
+    label: "Doações",
+    path: "/doacoes",
+    desc: "Formas de contribuir com a casa de acolhimento.",
+    icon: Heart,
+    bgClass: "accent-pink-bg",
+    iconClass: "accent-pink-text",
+    borderClass: "hover:border-accent-pink/45",
+  },
+  {
+    label: "Transparência",
+    path: "/transparencia",
+    desc: "Documentos institucionais e prestação de contas.",
+    icon: FileText,
+    bgClass: "accent-yellow-bg",
+    iconClass: "accent-yellow-text",
+    borderClass: "hover:border-accent-yellow/55",
+  },
+  {
+    label: "Notícias",
+    path: "/noticias",
+    desc: "Atualizações, comunicados e novidades da APROCAR.",
+    icon: Newspaper,
+    bgClass: "accent-blue-bg",
+    iconClass: "accent-blue-text",
+    borderClass: "hover:border-accent-blue/45",
+  },
+  {
+    label: "Contato",
+    path: "/contato",
+    desc: "Telefone, e-mail, localização e formulário de contato.",
+    icon: MessageCircle,
+    bgClass: "accent-pink-bg",
+    iconClass: "accent-pink-text",
+    borderClass: "hover:border-accent-pink/45",
+  },
 ];
 
+const formatNewsDate = (date: string) => {
+  if (!date) return "";
+  const [year, month, day] = date.split("-");
+  return new Date(Number(year), Number(month) - 1, Number(day)).toLocaleDateString("pt-BR", {
+    month: "long",
+    year: "numeric",
+  });
+};
+
 const Index = () => {
+  const [noticias, setNoticias] = useState<NewsSummary[]>([]);
+
+  useEffect(() => {
+    fetchPublicNews().then((posts) => setNoticias(posts.slice(0, 3)));
+  }, []);
+
   return (
     <main>
       {/* HERO */}
@@ -63,7 +106,8 @@ const Index = () => {
             height={1080}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-foreground/50" />
+          <div className="absolute inset-0 bg-gradient-to-b from-foreground/72 via-foreground/56 to-foreground/78" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(23,42,74,0.88)_0%,rgba(23,42,74,0.62)_36%,rgba(23,42,74,0.16)_66%,transparent_84%)]" />
         </div>
         <div className="relative z-10 container-wide text-center px-6">
           <motion.div
@@ -71,13 +115,18 @@ const Index = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
           >
-            <p className="text-primary-foreground/70 text-sm uppercase tracking-[0.3em] mb-8 font-body">
+            <img
+              src={logo}
+              alt="APROCAR Casa de Acolhimento"
+              className="mx-auto mb-8 h-28 w-auto drop-shadow-2xl md:h-36"
+            />
+            <p className="mb-8 text-sm uppercase tracking-[0.3em] text-primary-foreground/95 font-body">
               Associação de Proteção à Criança e Adolescente de Rancharia
             </p>
-            <h1 className="editorial-title text-primary-foreground max-w-4xl mx-auto mb-8">
+            <h1 className="hero-title mx-auto mb-8 max-w-4xl text-primary-foreground">
               Onde o cuidado se transforma em oportunidade de recomeço.
             </h1>
-            <p className="editorial-body text-primary-foreground/70 max-w-2xl mx-auto mb-12">
+            <p className="editorial-body mx-auto mb-12 max-w-2xl text-primary-foreground/95">
               Desde 2001, acolhemos crianças e adolescentes com respeito, afeto e compromisso,
               garantindo proteção integral e oportunidades de desenvolvimento.
             </p>
@@ -160,14 +209,15 @@ const Index = () => {
       </section>
 
       {/* IMPACT BLOCK */}
-      <section className="accent-blue-bg section-padding py-24 md:py-32">        <div className="container-narrow text-center">
+      <section className="accent-blue-bg section-padding py-24 md:py-32">
+        <div className="container-narrow text-center">
         <AnimatedSection>
           <p className="text-sm uppercase tracking-[0.3em] text-muted-foreground mb-6">
             Nosso impacto
           </p>
           <h2 className="editorial-subtitle text-foreground max-w-3xl mx-auto mb-8">
             Acolhemos crianças e adolescentes de
-            <span className="accent-blue-text italic"> 0 a 17 anos</span>,
+            <span className="accent-blue-text italic"> 0 a 17 anos, 11 meses e 29 dias</span>,
             assegurando proteção integral em um ambiente seguro, estruturado e afetivo.
           </h2>
           <p className="editorial-body max-w-2xl mx-auto">
@@ -227,7 +277,7 @@ const Index = () => {
       </section>
 
       {/* FACHADA / INSTITUTION */}
-      <section className="section-padding bg-secondary">
+      <section className="section-padding bg-background">
         <div className="container-wide">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
             <AnimatedSection>
@@ -272,7 +322,8 @@ const Index = () => {
               </h2>
               <p className="editorial-body mb-6">
                 Existem diversas formas de apoiar a APROCAR. Desde doações de nota fiscal até a
-                destinação do Imposto de Renda — cada contribuição faz a diferença.
+                destinação do Imposto de Renda para o Fundo da Criança e do Adolescente —
+                cada contribuição faz a diferença.
               </p>
               <div className="space-y-4 mb-10">
                 <div className="flex items-center gap-3">
@@ -281,7 +332,7 @@ const Index = () => {
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-2 h-2 rounded-full bg-accent-yellow" />
-                  <span className="text-foreground">Destinação do Imposto de Renda</span>
+                  <span className="text-foreground">Destinação do Imposto de Renda ao Fundo da Criança e do Adolescente</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-2 h-2 rounded-full bg-accent-yellow" />
@@ -350,61 +401,108 @@ const Index = () => {
             </div>
           </AnimatedSection>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {noticias.map((noticia, i) => (
-              <AnimatedSection key={noticia.id} delay={i * 0.1}>
-                <article className="rounded-2xl bg-card border border-border overflow-hidden hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
-                  <div className={`h-2 ${noticia.tagColor}`} />
-                  <div className="p-8 flex flex-col flex-1">
-                    <div className="flex items-center gap-3 mb-4">
-                      <span className={`text-xs font-medium px-3 py-1 rounded-full ${noticia.tagColor}`}>
-                        {noticia.tag}
-                      </span>
-                      <span className="text-xs text-muted-foreground flex items-center gap-1">
-                        <Calendar size={12} />
-                        {noticia.date}
-                      </span>
+          {noticias.length === 0 ? (
+            <AnimatedSection>
+              <div className="rounded-2xl border border-dashed bg-card p-10 text-center text-muted-foreground">
+                Nenhuma notícia publicada ainda.
+              </div>
+            </AnimatedSection>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {noticias.map((noticia, i) => (
+                <AnimatedSection key={noticia.id} delay={i * 0.1}>
+                  <article className="rounded-2xl bg-card border border-border overflow-hidden hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
+                    <Link to={`/noticias/${noticia.slug}`} className="block h-44 bg-muted overflow-hidden">
+                      {noticia.imagem[0] ? (
+                        <img
+                          src={noticia.imagem[0]}
+                          alt={noticia.titulo}
+                          loading="lazy"
+                          decoding="async"
+                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                        />
+                      ) : (
+                        <div className="h-full accent-pink-bg flex items-center justify-center text-muted-foreground">
+                          <ImageOff size={28} />
+                        </div>
+                      )}
+                    </Link>
+                    <div className="p-8 flex flex-col flex-1">
+                      <div className="flex flex-wrap items-center gap-3 mb-4">
+                        {noticia.categoria.slice(0, 1).map((categoria) => (
+                          <span key={categoria} className="text-xs font-medium px-3 py-1 rounded-full accent-yellow-bg">
+                            {categoria}
+                          </span>
+                        ))}
+                        <span className="text-xs text-muted-foreground flex items-center gap-1">
+                          <Calendar size={12} />
+                          {formatNewsDate(noticia.data)}
+                        </span>
+                      </div>
+                      <h3 className="text-display text-xl font-semibold text-foreground mb-3">
+                        <Link to={`/noticias/${noticia.slug}`}>{noticia.titulo}</Link>
+                      </h3>
+                      <p className="text-muted-foreground text-sm leading-relaxed flex-1 line-clamp-3">
+                        {noticia.descricao}
+                      </p>
+                      <Link
+                        to={`/noticias/${noticia.slug}`}
+                        className="inline-flex items-center gap-2 text-sm font-medium text-foreground mt-6 hover:gap-4 transition-all duration-300"
+                      >
+                        Ler mais
+                        <ArrowRight size={14} />
+                      </Link>
                     </div>
-                    <h3 className="text-display text-xl font-semibold text-foreground mb-3">
-                      {noticia.title}
-                    </h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed flex-1">
-                      {noticia.excerpt}
-                    </p>
-                  </div>
-                </article>
-              </AnimatedSection>
-            ))}
-          </div>
+                  </article>
+                </AnimatedSection>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
 
       {/* SITEMAP */}
-      <section className="section-padding">
+      <section className="section-padding bg-accent-blue-soft/45">
         <div className="container-wide">
           <AnimatedSection>
-            <div className="text-center mb-16">
+            <div className="mx-auto mb-16 max-w-3xl text-center">
               <p className="text-sm uppercase tracking-[0.3em] text-muted-foreground mb-6">
                 Explore
               </p>
               <h2 className="editorial-title text-foreground">
                 Mapa do <span className="accent-blue-text italic">site</span>
               </h2>
+              <p className="editorial-body mx-auto mt-6 max-w-2xl">
+                Acesse rapidamente as principais áreas do site da APROCAR.
+              </p>
             </div>
           </AnimatedSection>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 max-w-5xl mx-auto">
+          <div className="mx-auto grid max-w-6xl grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-6">
             {sitemapLinks.map((item, i) => (
-              <AnimatedSection key={item.path} delay={i * 0.08}>
+              <AnimatedSection
+                key={item.path}
+                delay={i * 0.08}
+                className={`h-full lg:col-span-2 ${i === 3 ? "lg:col-start-2" : ""}`}
+              >
                 <Link
                   to={item.path}
-                  className="group block p-6 rounded-2xl border border-border bg-card hover:shadow-lg hover:border-accent-yellow transition-all duration-300 text-center h-full"
+                  className={`soft-card group flex h-full min-h-48 flex-col justify-between p-7 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${item.borderClass}`}
                 >
-                  <h3 className="text-display text-lg font-semibold text-foreground mb-2 group-hover:accent-yellow-text transition-colors">
-                    {item.label}
-                  </h3>
-                  <p className="text-muted-foreground text-xs leading-relaxed">{item.desc}</p>
+                  <div>
+                    <div className={`mb-6 flex h-12 w-12 items-center justify-center rounded-2xl ${item.bgClass}`}>
+                      <item.icon size={22} className={item.iconClass} />
+                    </div>
+                    <h3 className="mb-3 text-display text-2xl font-semibold text-foreground transition-colors group-hover:text-primary">
+                      {item.label}
+                    </h3>
+                    <p className="text-base leading-relaxed text-muted-foreground">{item.desc}</p>
+                  </div>
+                  <span className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-foreground transition-all duration-300 group-hover:gap-3">
+                    Acessar
+                    <ArrowRight size={16} />
+                  </span>
                 </Link>
               </AnimatedSection>
             ))}
@@ -413,16 +511,16 @@ const Index = () => {
       </section>
 
       {/* QUICK CONTACT */}
-      <section className="section-padding bg-secondary">
+      <section className="section-padding bg-primary text-primary-foreground">
         <div className="container-narrow text-center">
           <AnimatedSection>
-            <p className="text-sm uppercase tracking-[0.3em] text-muted-foreground mb-6">
+            <p className="mb-6 text-sm uppercase tracking-[0.3em] text-primary-foreground/70">
               Fale conosco
             </p>
-            <h2 className="editorial-subtitle text-foreground mb-8">
+            <h2 className="editorial-subtitle mb-8 text-primary-foreground">
               Entre em contato
             </h2>
-            <p className="editorial-body mb-12 max-w-lg mx-auto">
+            <p className="mx-auto mb-12 max-w-lg text-base leading-relaxed text-primary-foreground/82 md:text-lg">
               Estamos à disposição para esclarecer dúvidas, receber doações ou simplesmente ouvir você.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -430,14 +528,14 @@ const Index = () => {
                 href="https://wa.me/5518997319946"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-[#25D366] text-[#fff] text-sm font-medium tracking-wide hover:opacity-90 transition-all duration-300 rounded-full"
+                className="inline-flex items-center gap-2 rounded-full bg-[#25D366] px-8 py-4 text-base font-semibold tracking-wide text-white transition-all duration-300 hover:opacity-90"
               >
                 WhatsApp
                 <ArrowRight size={16} />
               </a>
               <Link
                 to="/contato"
-                className="inline-flex items-center gap-2 px-8 py-4 border border-foreground text-foreground text-sm font-medium tracking-wide hover:bg-foreground hover:text-primary-foreground transition-all duration-300 rounded-full"
+                className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/40 px-8 py-4 text-base font-semibold tracking-wide text-primary-foreground transition-all duration-300 hover:bg-primary-foreground hover:text-primary"
               >
                 Formulário de contato
                 <ArrowRight size={16} />

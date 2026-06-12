@@ -6,40 +6,44 @@
 
 @layer base {
   :root {
-    --background: 40 33% 98%;
-    --foreground: 220 20% 14%;
+    --background: 43 57% 97%;
+    --foreground: 218 38% 16%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 20% 14%;
+    --card-foreground: 218 38% 16%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 14%;
+    --popover-foreground: 218 38% 16%;
 
-    --primary: 220 20% 14%;
-    --primary-foreground: 40 33% 98%;
+    --primary: 218 60% 25%;
+    --primary-foreground: 38 52% 97%;
 
-    --secondary: 40 33% 95%;
-    --secondary-foreground: 220 20% 14%;
+    --secondary: 44 70% 93%;
+    --secondary-foreground: 218 38% 16%;
 
-    --muted: 40 20% 94%;
-    --muted-foreground: 220 10% 46%;
+    --muted: 42 42% 91%;
+    --muted-foreground: 216 18% 36%;
 
-    --accent-yellow: 43 96% 56%;
-    --accent-yellow-soft: 43 80% 92%;
-    --accent-pink: 340 70% 65%;
-    --accent-pink-soft: 340 60% 94%;
-    --accent-blue: 210 60% 55%;
-    --accent-blue-soft: 210 50% 93%;
+    --accent-yellow: 47 97% 56%;
+    --accent-yellow-soft: 48 100% 91%;
+    --accent-pink: 354 73% 54%;
+    --accent-pink-soft: 354 82% 94%;
+    --accent-blue: 198 78% 48%;
+    --accent-blue-soft: 198 82% 92%;
+    --accent-purple: 279 45% 44%;
+    --accent-purple-soft: 279 50% 93%;
+    --accent-green: 122 36% 39%;
+    --accent-green-soft: 120 39% 91%;
 
-    --accent: 43 80% 92%;
-    --accent-foreground: 220 20% 14%;
+    --accent: 48 100% 91%;
+    --accent-foreground: 218 38% 16%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 40 20% 90%;
-    --input: 40 20% 90%;
-    --ring: 220 20% 14%;
+    --border: 42 32% 85%;
+    --input: 42 32% 85%;
+    --ring: 218 60% 25%;
 
     --radius: 0.5rem;
 
@@ -67,6 +71,12 @@
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-image:
+      radial-gradient(circle at 12% 8%, hsl(var(--accent-yellow-soft) / 0.72), transparent 24rem),
+      radial-gradient(circle at 92% 16%, hsl(var(--accent-blue-soft) / 0.58), transparent 22rem),
+      radial-gradient(circle at 18% 88%, hsl(var(--accent-green-soft) / 0.5), transparent 20rem),
+      linear-gradient(180deg, hsl(var(--background)), hsl(var(--secondary) / 0.45));
+    background-attachment: fixed;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -84,7 +94,7 @@
   }
 
   .section-padding {
-    @apply py-24 md:py-32 lg:py-40;
+    @apply py-20 md:py-28 lg:py-36;
   }
 
   .container-narrow {
@@ -97,16 +107,24 @@
 
   .editorial-title {
     font-family: var(--font-display);
-    @apply text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light leading-tight tracking-tight;
+    @apply text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-medium leading-tight;
+    letter-spacing: 0;
+  }
+
+  .hero-title {
+    font-family: var(--font-body);
+    @apply text-4xl font-bold md:text-5xl lg:text-6xl;
+    line-height: 1.06;
+    letter-spacing: 0;
   }
 
   .editorial-subtitle {
     font-family: var(--font-display);
-    @apply text-2xl md:text-3xl lg:text-4xl font-light leading-snug;
+    @apply text-2xl md:text-3xl lg:text-4xl font-medium leading-snug;
   }
 
   .editorial-body {
-    @apply text-base md:text-lg leading-relaxed tracking-wide;
+    @apply text-base md:text-lg leading-relaxed;
     color: hsl(var(--muted-foreground));
   }
 
@@ -122,6 +140,14 @@
     background-color: hsl(var(--accent-blue-soft));
   }
 
+  .accent-purple-bg {
+    background-color: hsl(var(--accent-purple-soft));
+  }
+
+  .accent-green-bg {
+    background-color: hsl(var(--accent-green-soft));
+  }
+
   .accent-yellow-text {
     color: hsl(var(--accent-yellow));
   }
@@ -134,12 +160,24 @@
     color: hsl(var(--accent-blue));
   }
 
+  .accent-purple-text {
+    color: hsl(var(--accent-purple));
+  }
+
+  .accent-green-text {
+    color: hsl(var(--accent-green));
+  }
+
   .image-editorial {
     @apply rounded-2xl overflow-hidden;
   }
 
   .image-editorial-rounded {
     @apply rounded-[2rem] overflow-hidden;
+  }
+
+  .soft-card {
+    @apply rounded-[1.5rem] border border-border/70 bg-card/95 shadow-[0_18px_60px_rgba(30,55,100,0.09)];
   }
 }
 

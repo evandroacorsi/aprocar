@@ -1,5 +1,7 @@
 import { useState } from "react";
 import AnimatedSection from "@/components/AnimatedSection";
+import PageHero from "@/components/PageHero";
+import contatoHero from "@/assets/contato.jpg";
 import { Phone, Mail, MapPin, Send, Instagram, Facebook } from "lucide-react";
 
 const Contato = () => {
@@ -13,30 +15,28 @@ const Contato = () => {
   };
 
   return (
-    <main className="pt-20">
-      <section className="section-padding">
-        <div className="container-wide">
-          <AnimatedSection>
-            <p className="text-sm uppercase tracking-[0.3em] text-muted-foreground mb-6">
-              Fale conosco
-            </p>
-            <h1 className="editorial-title text-foreground max-w-3xl mb-8">
-              Entre em<br />
-              <span className="accent-blue-text italic">contato</span>
-            </h1>
-          </AnimatedSection>
-        </div>
-      </section>
+    <main className="pt-24">
+      <PageHero
+        eyebrow="Fale conosco"
+        title="Entre em"
+        highlight="contato"
+        description="Estamos à disposição para esclarecer dúvidas, receber doações ou ouvir você."
+        image={contatoHero}
+        imageAlt="Atendimento e contato da APROCAR"
+        accentClass="accent-blue-text"
+        imagePosition="center"
+      />
 
       <section className="section-padding bg-secondary">
         <div className="container-wide">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
+          <div className="grid grid-cols-1 items-stretch gap-16 lg:grid-cols-2 lg:gap-24">
             {/* Form */}
-            <AnimatedSection>
+            <AnimatedSection className="h-full">
+              <div className="soft-card h-full p-8 md:p-10">
               <h2 className="editorial-subtitle text-foreground mb-8">Envie uma mensagem</h2>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label className="text-sm font-medium text-foreground mb-2 block">Nome</label>
+                  <label className="mb-2 block text-base font-medium text-foreground">Nome</label>
                   <input
                     type="text"
                     required
@@ -47,7 +47,7 @@ const Contato = () => {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-foreground mb-2 block">Telefone</label>
+                  <label className="mb-2 block text-base font-medium text-foreground">Telefone</label>
                   <input
                     type="tel"
                     value={formData.telefone}
@@ -57,7 +57,7 @@ const Contato = () => {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-foreground mb-2 block">Mensagem</label>
+                  <label className="mb-2 block text-base font-medium text-foreground">Mensagem</label>
                   <textarea
                     required
                     rows={5}
@@ -69,53 +69,56 @@ const Contato = () => {
                 </div>
                 <button
                   type="submit"
-                  className="inline-flex items-center gap-2 px-8 py-4 bg-foreground text-primary-foreground text-sm font-medium tracking-wide hover:opacity-90 transition-all duration-300 rounded-full"
+                  className="inline-flex items-center gap-2 rounded-full bg-foreground px-8 py-4 text-base font-medium tracking-wide text-primary-foreground transition-all duration-300 hover:opacity-90"
                 >
                   <Send size={16} />
                   Enviar mensagem
                 </button>
               </form>
+              </div>
             </AnimatedSection>
 
-            {/* Info + Map */}
-            <AnimatedSection delay={0.2}>
+            {/* Info */}
+            <AnimatedSection delay={0.2} className="h-full">
+              <div className="soft-card flex h-full flex-col p-8 md:p-10">
               <h2 className="editorial-subtitle text-foreground mb-8">Informações</h2>
-              <div className="space-y-6 mb-12">
-                <a href="tel:+5518997319946" className="flex items-center gap-4 p-5 rounded-xl border border-border bg-card hover:shadow-md transition-shadow">
+              <div className="space-y-6">
+                <a href="tel:+5518997319946" className="flex items-center gap-4 rounded-2xl border border-border bg-background/80 p-5 transition-shadow hover:shadow-md">
                   <div className="w-11 h-11 rounded-full accent-blue-bg flex items-center justify-center shrink-0">
                     <Phone size={18} className="accent-blue-text" />
                   </div>
                   <div>
-                    <p className="text-foreground font-medium text-sm">WhatsApp</p>
-                    <p className="text-muted-foreground text-xs">(18) 99731-9946</p>
+                    <p className="text-base font-medium text-foreground">WhatsApp</p>
+                    <p className="text-sm text-muted-foreground">(18) 99731-9946</p>
                   </div>
                 </a>
 
-                <a href="mailto:casadeacolhimentoaprocar@yahoo.com.br" className="flex items-center gap-4 p-5 rounded-xl border border-border bg-card hover:shadow-md transition-shadow">
+                <a href="mailto:casadeacolhimentoaprocar@yahoo.com.br" className="flex items-center gap-4 rounded-2xl border border-border bg-background/80 p-5 transition-shadow hover:shadow-md">
                   <div className="w-11 h-11 rounded-full accent-yellow-bg flex items-center justify-center shrink-0">
                     <Mail size={18} className="accent-yellow-text" />
                   </div>
                   <div>
-                    <p className="text-foreground font-medium text-sm">E-mail</p>
-                    <p className="text-muted-foreground text-xs">casadeacolhimentoaprocar@yahoo.com.br</p>
+                    <p className="text-base font-medium text-foreground">E-mail</p>
+                    <p className="text-sm text-muted-foreground">casadeacolhimentoaprocar@yahoo.com.br</p>
                   </div>
                 </a>
 
-                <div className="flex items-center gap-4 p-5 rounded-xl border border-border bg-card">
+                <div className="flex items-center gap-4 rounded-2xl border border-border bg-background/80 p-5">
                   <div className="w-11 h-11 rounded-full accent-pink-bg flex items-center justify-center shrink-0">
                     <MapPin size={18} className="accent-pink-text" />
                   </div>
                   <div>
-                    <p className="text-foreground font-medium text-sm">Endereço</p>
-                    <p className="text-muted-foreground text-xs">Rua Leoncio Vieira Dos Santos, nº 1345 – Vila Guaçu, Rancharia - SP</p>
+                    <p className="text-base font-medium text-foreground">Endereço</p>
+                    <p className="text-sm text-muted-foreground">Rua Leoncio Vieira Dos Santos, nº 1345 – Vila Guaçu, Rancharia - SP</p>
                   </div>
                 </div>
               </div>
 
-              {/* Social */}
-              <div className="flex gap-4 mb-12">
+              <div className="mt-auto pt-10">
+                <p className="mb-4 text-base font-medium text-foreground">Redes sociais</p>
+                <div className="flex gap-4">
                 <a
-                  href="https://www.instagram.com/aprocaracolhimento"
+                  href="https://www.instagram.com/aprocar.rancharia"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-11 h-11 rounded-full border border-border flex items-center justify-center hover:bg-secondary transition-colors"
@@ -130,32 +133,27 @@ const Contato = () => {
                 >
                   <Facebook size={18} />
                 </a>
+                </div>
               </div>
-
-              {/* Map */}
-              <div className="rounded-2xl overflow-hidden border border-border">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3704.558!2d-50.8935!3d-22.2388!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjLCsDE0JzE5LjciUyA1MMKwNTMnMzYuNiJX!5e0!3m2!1spt-BR!2sbr!4v1234567890"
-                  width="100%"
-                  height="300"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Localização APROCAR"
-                />
               </div>
-              <a
-                href="https://www.google.com/maps/search/Rua+Leoncio+Vieira+Dos+Santos+1345+Vila+Guaçu+Rancharia"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mt-4"
-              >
-                <MapPin size={14} />
-                Abrir no Google Maps
-              </a>
             </AnimatedSection>
           </div>
+        </div>
+      </section>
+
+      <section className="bg-background">
+        <div className="overflow-hidden border-y border-border shadow-[0_18px_60px_rgba(30,64,75,0.08)]">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3704.558!2d-50.8935!3d-22.2388!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjLCsDE0JzE5LjciUyA1MMKwNTMnMzYuNiJX!5e0!3m2!1spt-BR!2sbr!4v1234567890"
+            width="100%"
+            height="500"
+            style={{ border: 0 }}
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            title="Localização APROCAR"
+            className="block min-h-[440px] w-full"
+          />
         </div>
       </section>
     </main>

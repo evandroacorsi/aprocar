@@ -1,6 +1,8 @@
 import AnimatedSection from "@/components/AnimatedSection";
+import PageHero from "@/components/PageHero";
 import careImg from "@/assets/care.jpg";
 import aboutImg from "@/assets/about-activities.jpg";
+import fachadaImg from "@/assets/fachada.jpeg";
 import { Heart, Shield, Users, Home, Star } from "lucide-react";
 
 const diretoria = [
@@ -8,6 +10,7 @@ const diretoria = [
   { nome: "Érica Maria Acorsi Lima", cargo: "Vice Presidente" },
   { nome: "Juliana Fernanda Gemente Thomé", cargo: "Secretária" },
   { nome: "Natanael Jose Ribeiro", cargo: "Tesoureiro" },
+  { nome: "Cleide Delattore Nunes", cargo: "Diretor de Patrimônio" },
   { nome: "Vinicius Ferro Roberto", cargo: "Procurador Jurídico" },
 ];
 
@@ -56,30 +59,23 @@ const getRoleBg = (cargo: string) => {
 
 const Sobre = () => {
   return (
-    <main className="pt-20">
-      {/* Hero */}
-      <section className="section-padding">
-        <div className="container-wide">
-          <AnimatedSection>
-            <p className="text-sm uppercase tracking-[0.3em] text-muted-foreground mb-6">
-              Sobre a APROCAR
-            </p>
-            <h1 className="editorial-title text-foreground max-w-3xl mb-8">
-              Uma trajetória de<br />
-              <span className="accent-yellow-text italic">compromisso</span> com a infância
-            </h1>
-            <p className="editorial-body max-w-2xl">
-              Conheça a história, missão e valores que guiam nosso trabalho diário na proteção
-              de crianças e adolescentes.
-            </p>
-          </AnimatedSection>
-        </div>
-      </section>
+    <main className="pt-24">
+      <PageHero
+        eyebrow="Sobre a APROCAR"
+        title="Uma trajetória de"
+        highlight="compromisso"
+        suffix="com a infância"
+        description="Conheça a história, missão e valores que guiam nosso trabalho diário na proteção de crianças e adolescentes."
+        image={fachadaImg}
+        imageAlt="Fachada da APROCAR"
+        accentClass="accent-yellow-text"
+        imagePosition="center"
+      />
 
       {/* History timeline */}
       <section className="section-padding bg-secondary">
         <div className="container-wide">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
+          <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2 lg:gap-24">
             <AnimatedSection>
               <p className="text-sm uppercase tracking-[0.3em] text-muted-foreground mb-6">
                 Nossa história
@@ -98,13 +94,13 @@ const Sobre = () => {
                   <div key={i} className="flex gap-6">
                     <div className="flex flex-col items-center">
                       <div className="w-12 h-12 rounded-full accent-yellow-bg flex items-center justify-center shrink-0">
-                        <span className="text-xs font-bold text-foreground">{item.year}</span>
+                        <span className="text-sm font-bold text-foreground">{item.year}</span>
                       </div>
                       {i < 3 && <div className="w-px h-full bg-border mt-2" />}
                     </div>
                     <div className="pb-2">
                       <h3 className="text-display text-xl font-semibold text-foreground mb-2">{item.title}</h3>
-                      <p className="text-muted-foreground text-sm leading-relaxed">{item.desc}</p>
+                      <p className="text-base leading-relaxed text-muted-foreground">{item.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -112,9 +108,9 @@ const Sobre = () => {
             </AnimatedSection>
 
             <AnimatedSection delay={0.2}>
-              <div className="sticky top-28">
+              <div className="lg:pl-4">
                 <div className="image-editorial-rounded">
-                  <img src={careImg} alt="Cuidado e acolhimento" loading="lazy" className="w-full h-[500px] object-cover" />
+                  <img src={careImg} alt="Cuidado e acolhimento" loading="lazy" className="h-[420px] w-full object-cover object-center md:h-[520px]" />
                 </div>
               </div>
             </AnimatedSection>
@@ -165,7 +161,7 @@ const Sobre = () => {
                   </div>
                   <div>
                     <h3 className="text-display text-2xl font-semibold mb-2 text-foreground">{value.title}</h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">{value.desc}</p>
+                    <p className="text-base leading-relaxed text-muted-foreground">{value.desc}</p>
                   </div>
                 </div>
               </AnimatedSection>
@@ -188,7 +184,7 @@ const Sobre = () => {
                 Público atendido
               </p>
               <h2 className="editorial-subtitle text-foreground mb-6">
-                Crianças e adolescentes de 0 a 17 anos
+                Crianças e adolescentes de 0 a 17 anos, 11 meses e 29 dias
               </h2>
               <p className="editorial-body mb-4">
                 A APROCAR realiza o acolhimento institucional assegurando proteção integral
@@ -246,7 +242,7 @@ const Sobre = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-20">
             {diretoria.map((p, i) => (
               <AnimatedSection key={p.nome} delay={i * 0.05}>
-                <div className="relative group p-6 rounded-2xl border border-border bg-card hover:shadow-xl transition-all duration-500 overflow-hidden">
+                <div className="soft-card relative group overflow-hidden p-6 transition-all duration-500 hover:shadow-xl">
                   <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${getRoleColor(p.cargo)}`} />
                   <div className="flex items-center gap-4">
                     <div className={`w-14 h-14 rounded-2xl ${getRoleBg(p.cargo)} flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300`}>
@@ -274,7 +270,7 @@ const Sobre = () => {
               <div className="space-y-4">
                 {conselhoDeliberativo.map((p, i) => (
                   <AnimatedSection key={p.nome} delay={i * 0.05}>
-                    <div className="relative group p-5 rounded-2xl border border-border bg-card hover:shadow-xl transition-all duration-500 overflow-hidden">
+                    <div className="soft-card relative group overflow-hidden p-5 transition-all duration-500 hover:shadow-xl">
                       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent-blue to-accent-blue/60" />
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-xl accent-blue-bg flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300">
@@ -300,7 +296,7 @@ const Sobre = () => {
               <div className="space-y-4">
                 {conselhoFiscal.map((p, i) => (
                   <AnimatedSection key={p.nome} delay={i * 0.05}>
-                    <div className="relative group p-5 rounded-2xl border border-border bg-card hover:shadow-xl transition-all duration-500 overflow-hidden">
+                    <div className="soft-card relative group overflow-hidden p-5 transition-all duration-500 hover:shadow-xl">
                       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent-pink to-accent-pink/60" />
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-xl accent-pink-bg flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300">
@@ -321,17 +317,17 @@ const Sobre = () => {
           {/* Colaboradores */}
           <AnimatedSection>
             <h3 className="text-display text-2xl font-semibold text-foreground mb-10 flex items-center gap-3">
-              <div className="w-8 h-1 bg-accent-pink rounded-full" />
+              <div className="w-8 h-1 bg-accent-blue rounded-full" />
               Colaboradores
             </h3>
           </AnimatedSection>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {colaboradores.map((p, i) => (
               <AnimatedSection key={p.nome} delay={i * 0.03}>
-                <div className="relative group p-5 rounded-2xl border border-border bg-card hover:shadow-lg transition-all duration-500 overflow-hidden">
-                  <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${getRoleColor(p.cargo)}`} />
+                <div className="soft-card relative group overflow-hidden p-5 transition-all duration-500 hover:shadow-lg">
+                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent-blue to-accent-blue/60" />
                   <div className="flex items-center gap-4">
-                    <div className={`w-11 h-11 rounded-xl ${getRoleBg(p.cargo)} flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300`}>
+                    <div className="w-11 h-11 rounded-xl accent-blue-bg flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300">
                       <span className="text-foreground text-xs font-bold">{getInitials(p.nome)}</span>
                     </div>
                     <div>
