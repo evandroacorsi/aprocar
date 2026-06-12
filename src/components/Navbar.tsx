@@ -19,6 +19,7 @@ const Navbar = () => {
   const location = useLocation();
   const isHome = location.pathname === "/";
   const showLogo = !isHome || hasScrolledHomeHero;
+  const showInitialMobileBrand = isHome && !showLogo;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -46,9 +47,30 @@ const Navbar = () => {
       <motion.div
         layout
         transition={{ layout: { duration: 0.24, ease: [0.22, 1, 0.36, 1] } }}
-        className={`container-wide relative flex min-h-24 items-center gap-4 py-2 ${showLogo ? "justify-between" : "justify-center"}`}
+        className={`container-wide relative flex min-h-20 items-center gap-4 py-2 sm:min-h-24 ${showLogo ? "justify-between" : "justify-between lg:justify-center"}`}
       >
         <AnimatePresence initial={false} mode="popLayout">
+          {showInitialMobileBrand && (
+            <motion.div
+              key="navbar-mobile-brand"
+              layout
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.96 }}
+              transition={{ duration: 0.2 }}
+              className="mr-auto flex min-w-0 items-center lg:hidden"
+            >
+              <Link to="/" className="min-w-0 leading-tight text-foreground" aria-label="Início">
+                <span className="block text-base font-extrabold uppercase tracking-[0.14em]">
+                  Aprocar
+                </span>
+                <span className="block truncate text-[0.64rem] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+                  Casa de Acolhimento - Rancharia/SP
+                </span>
+              </Link>
+            </motion.div>
+          )}
+
           {showLogo && (
             <motion.div
               key="navbar-logo"
@@ -63,14 +85,14 @@ const Navbar = () => {
                 <img
                   src={logo}
                   alt="APROCAR Casa de Acolhimento"
-                  className="h-16 w-auto shrink-0 drop-shadow-md sm:h-20"
+                  className="h-12 w-auto shrink-0 drop-shadow-md sm:h-16 lg:h-20"
                 />
-                <span className="hidden min-w-0 leading-tight text-foreground sm:block">
-                  <span className="block text-sm font-bold uppercase tracking-[0.18em]">
+                <span className="min-w-0 leading-tight text-foreground">
+                  <span className="block text-[0.62rem] font-bold uppercase tracking-[0.12em] sm:text-sm sm:tracking-[0.18em]">
                     Casa de acolhimento
                   </span>
-                  <span className="block text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">
-                    Rancharia-SP
+                  <span className="block text-[0.58rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground sm:text-xs sm:tracking-[0.22em]">
+                    Rancharia/SP
                   </span>
                 </span>
               </Link>
@@ -102,7 +124,7 @@ const Navbar = () => {
         {/* Mobile toggle */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className={`${showLogo ? "" : "ml-auto"} rounded-full border border-border bg-white/90 p-2 text-foreground shadow-sm lg:hidden`}
+          className="rounded-full border border-border bg-white/90 p-2 text-foreground shadow-sm lg:hidden"
           aria-label="Menu"
         >
           {isOpen ? <X size={24} /> : <Menu size={24} />}

@@ -118,6 +118,14 @@
     letter-spacing: 0;
   }
 
+  .home-hero-title {
+    font-family: var(--font-body);
+    @apply text-[2rem] font-bold sm:text-4xl md:text-5xl lg:text-6xl;
+    line-height: 1.0;
+    font-size: clamp(1.8rem, 5vw, 6rem);
+    letter-spacing: 0;
+  }
+
   .editorial-subtitle {
     font-family: var(--font-display);
     @apply text-2xl md:text-3xl lg:text-4xl font-medium leading-snug;

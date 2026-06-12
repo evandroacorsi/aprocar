@@ -1,4 +1,11 @@
-import { Link } from "react-router-dom";
+import aboutImg from "@/assets/about-activities.jpg";
+import donationImg from "@/assets/donation.jpg";
+import fachada from "@/assets/fachada.jpeg";
+import heroBg from "@/assets/hero-bg.jpg";
+import logo from "@/assets/logo-remove-bg.png";
+import AnimatedSection from "@/components/AnimatedSection";
+import { fetchPublicNews, type NewsSummary } from "@/lib/news";
+import { motion } from "framer-motion";
 import {
   ArrowRight,
   Calendar,
@@ -12,15 +19,8 @@ import {
   Star,
   Users,
 } from "lucide-react";
-import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import AnimatedSection from "@/components/AnimatedSection";
-import { fetchPublicNews, type NewsSummary } from "@/lib/news";
-import heroBg from "@/assets/hero-bg.jpg";
-import aboutImg from "@/assets/about-activities.jpg";
-import donationImg from "@/assets/donation.jpg";
-import fachada from "@/assets/fachada.jpeg";
-import logo from "@/assets/logo-remove-bg.png";
+import { Link } from "react-router-dom";
 
 const valores = [
   { icon: Heart, title: "Respeito", desc: "Reconhecemos a singularidade e a história de cada criança e adolescente.", color: "accent-pink" },
@@ -97,7 +97,7 @@ const Index = () => {
   return (
     <main>
       {/* HERO */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative flex min-h-[100svh] items-center justify-center overflow-hidden pb-12 pt-24 sm:pb-16 sm:pt-28 md:min-h-screen md:py-24">
         <div className="absolute inset-0">
           <img
             src={heroBg}
@@ -118,15 +118,15 @@ const Index = () => {
             <img
               src={logo}
               alt="APROCAR Casa de Acolhimento"
-              className="mx-auto mb-8 h-28 w-auto drop-shadow-2xl md:h-36"
+              className="mx-auto mb-6 h-24 w-auto drop-shadow-2xl sm:mb-8 sm:h-28 md:h-36"
             />
-            <p className="mb-8 text-sm uppercase tracking-[0.3em] text-primary-foreground/95 font-body">
+            <p className="mb-6 text-xs uppercase tracking-[0.18em] text-primary-foreground/95 font-body sm:mb-8 sm:text-sm sm:tracking-[0.3em]">
               Associação de Proteção à Criança e Adolescente de Rancharia
             </p>
-            <h1 className="hero-title mx-auto mb-8 max-w-4xl text-primary-foreground">
+            <h1 className="home-hero-title mx-auto mb-6 max-w-6xl text-primary-foreground sm:mb-8">
               Onde o cuidado se transforma em oportunidade de recomeço.
             </h1>
-            <p className="editorial-body mx-auto mb-12 max-w-2xl text-primary-foreground/95">
+            <p className="editorial-body mx-auto mb-8 max-w-2xl text-primary-foreground/95 sm:mb-12">
               Desde 2001, acolhemos crianças e adolescentes com respeito, afeto e compromisso,
               garantindo proteção integral e oportunidades de desenvolvimento.
             </p>
@@ -150,7 +150,7 @@ const Index = () => {
         </div>
 
         <motion.div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+          className="absolute bottom-8 left-1/2 hidden -translate-x-1/2 md:block"
           animate={{ y: [0, 10, 0] }}
           transition={{ repeat: Infinity, duration: 2 }}
         >
