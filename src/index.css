@@ -121,8 +121,7 @@
   .home-hero-title {
     font-family: var(--font-body);
     @apply text-[2rem] font-bold sm:text-4xl md:text-5xl lg:text-6xl;
-    line-height: 1.0;
-    font-size: clamp(1.8rem, 5vw, 6rem);
+    line-height: 1.08;
     letter-spacing: 0;
   }
 

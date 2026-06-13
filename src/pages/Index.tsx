@@ -97,7 +97,7 @@ const Index = () => {
   return (
     <main>
       {/* HERO */}
-      <section className="relative flex min-h-[100svh] items-center justify-center overflow-hidden pb-12 pt-24 sm:pb-16 sm:pt-28 md:min-h-screen md:py-24">
+      <section className="relative flex min-h-[100svh] items-center justify-center overflow-hidden pb-12 pt-24 sm:pb-16 sm:pt-28 md:min-h-screen md:p-0">
         <div className="absolute inset-0">
           <img
             src={heroBg}
@@ -123,7 +123,7 @@ const Index = () => {
             <p className="mb-6 text-xs uppercase tracking-[0.18em] text-primary-foreground/95 font-body sm:mb-8 sm:text-sm sm:tracking-[0.3em]">
               Associação de Proteção à Criança e Adolescente de Rancharia
             </p>
-            <h1 className="home-hero-title mx-auto mb-6 max-w-6xl text-primary-foreground sm:mb-8">
+            <h1 className="home-hero-title mx-auto mb-6 max-w-4xl text-primary-foreground sm:mb-8">
               Onde o cuidado se transforma em oportunidade de recomeço.
             </h1>
             <p className="editorial-body mx-auto mb-8 max-w-2xl text-primary-foreground/95 sm:mb-12">
