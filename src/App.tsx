@@ -17,7 +17,8 @@ import Contato from "./pages/Contato.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import Auth from "./pages/Auth.tsx";
 import Admin from "./pages/Admin.tsx";
-import { ADMIN_PATH, AUTH_PATH } from "@/lib/adminRoutes";
+import ResetPassword from "./pages/ResetPassword.tsx";
+import { ADMIN_PATH, AUTH_PATH, RESET_PASSWORD_PATH } from "@/lib/adminRoutes";
 
 const queryClient = new QueryClient();
 
@@ -28,7 +29,7 @@ const RedirectLegacyNewsPost = () => {
 
 const AppRoutes = () => {
   const location = useLocation();
-  const hideLayout = [AUTH_PATH, ADMIN_PATH].includes(location.pathname);
+  const hideLayout = [AUTH_PATH, RESET_PASSWORD_PATH, ADMIN_PATH].includes(location.pathname);
 
   return (
     <>
@@ -45,6 +46,7 @@ const AppRoutes = () => {
         <Route path="/noticia/:id" element={<RedirectLegacyNewsPost />} />
         <Route path="/contato" element={<Contato />} />
         <Route path={AUTH_PATH} element={<Auth />} />
+        <Route path={RESET_PASSWORD_PATH} element={<ResetPassword />} />
         <Route path={ADMIN_PATH} element={<Admin />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

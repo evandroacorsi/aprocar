@@ -2,6 +2,10 @@
 declare(strict_types=1);
 
 header('Content-Type: application/json; charset=utf-8');
+header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: SAMEORIGIN');
+header('Referrer-Policy: strict-origin-when-cross-origin');
+header('Permissions-Policy: camera=(), microphone=(), geolocation=()');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204);
@@ -13,6 +17,51 @@ function api_respond(int $status, array $data): void
     http_response_code($status);
     echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     exit;
+}
+
+function api_client_ip(): string
+{
+    $candidates = [
+        $_SERVER['HTTP_CF_CONNECTING_IP'] ?? '',
+        $_SERVER['HTTP_X_FORWARDED_FOR'] ?? '',
+        $_SERVER['REMOTE_ADDR'] ?? '',
+    ];
+
+    foreach ($candidates as $candidate) {
+        $ip = trim(explode(',', (string) $candidate)[0]);
+        if (filter_var($ip, FILTER_VALIDATE_IP)) return $ip;
+    }
+
+    return 'unknown';
+}
+
+function api_rate_limit(string $key, int $limit, int $windowSeconds): void
+{
+    $dir = rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'aprocar-rate-limit';
+    if (!is_dir($dir) && !mkdir($dir, 0700, true)) {
+        api_respond(500, ['error' => 'Não foi possível preparar o controle de limite.']);
+    }
+
+    $file = $dir . DIRECTORY_SEPARATOR . hash('sha256', $key) . '.json';
+    $now = time();
+    $events = [];
+
+    if (is_file($file)) {
+        $decoded = json_decode((string) file_get_contents($file), true);
+        if (is_array($decoded)) $events = array_filter(array_map('intval', $decoded));
+    }
+
+    $events = array_values(array_filter(
+        $events,
+        fn (int $timestamp) => $timestamp > $now - $windowSeconds,
+    ));
+
+    if (count($events) >= $limit) {
+        api_respond(429, ['error' => 'Muitas tentativas. Aguarde alguns minutos e tente novamente.']);
+    }
+
+    $events[] = $now;
+    file_put_contents($file, json_encode($events), LOCK_EX);
 }
 
 function api_load_env_file(string $path): void
@@ -74,6 +123,11 @@ function api_supabase_key(): string
     return api_env('SUPABASE_PUBLISHABLE_KEY', api_env('VITE_SUPABASE_PUBLISHABLE_KEY'));
 }
 
+function api_supabase_service_role_key(): string
+{
+    return api_env('SUPABASE_SECRET_KEY', api_env('SUPABASE_SERVICE_ROLE_KEY'));
+}
+
 function api_site_url(): string
 {
     return rtrim(api_env('SITE_URL', api_env('VITE_SITE_URL', 'https://www.aprocar.org.br')), '/');
@@ -131,7 +185,60 @@ function api_supabase_request(string $url, string $token, ?array $payload = null
     ];
 }
 
-function api_assert_admin(string $resource = 'conteúdo'): void
+function api_supabase_service_request(
+    string $path,
+    string $method = 'GET',
+    ?array $payload = null,
+    array $extraHeaders = [],
+): array {
+    if (!function_exists('curl_init')) {
+        api_respond(500, ['error' => 'Extensão cURL do PHP não está disponível.']);
+    }
+
+    $supabaseUrl = api_supabase_url();
+    $serviceKey = api_supabase_service_role_key();
+    if ($supabaseUrl === '' || $serviceKey === '') {
+        api_respond(500, ['error' => 'Chave administrativa do Supabase não configurada no servidor.']);
+    }
+
+    $headers = ['apikey: ' . $serviceKey];
+    if (!str_starts_with($serviceKey, 'sb_secret_')) {
+        $headers[] = 'Authorization: Bearer ' . $serviceKey;
+    }
+    $headers = array_merge($headers, $extraHeaders);
+
+    $options = [
+        CURLOPT_CUSTOMREQUEST => $method,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 15,
+        CURLOPT_HTTPHEADER => $headers,
+    ];
+
+    if ($payload !== null) {
+        $options[CURLOPT_POSTFIELDS] = json_encode($payload);
+        $options[CURLOPT_HTTPHEADER][] = 'Content-Type: application/json';
+    }
+
+    $ch = curl_init($supabaseUrl . $path);
+    curl_setopt_array($ch, $options);
+
+    $body = curl_exec($ch);
+    $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($ch);
+    curl_close($ch);
+
+    $data = is_string($body) && $body !== '' ? json_decode($body, true) : null;
+
+    return [
+        'ok' => $body !== false && $status >= 200 && $status < 300,
+        'status' => $status,
+        'data' => $data,
+        'body' => $body,
+        'curl_error' => $curlError,
+    ];
+}
+
+function api_assert_admin(string $resource = 'conteúdo'): array
 {
     $supabaseUrl = api_supabase_url();
     $supabaseKey = api_supabase_key();
@@ -156,6 +263,8 @@ function api_assert_admin(string $resource = 'conteúdo'): void
     if (!$roleResponse['ok'] || $roleResponse['data'] !== true) {
         api_respond(403, ['error' => 'Acesso negado. Apenas administradores podem gerenciar ' . $resource . '.']);
     }
+
+    return $userResponse['data'];
 }
 
 api_bootstrap_env();

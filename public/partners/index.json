@@ -1,0 +1,65 @@
+[
+  {
+    "id": "dra-cecilia-helena-medica-pediatrica-ff9802",
+    "nome": "Dra. Cecília Helena - Medica Pediátrica"
+  },
+  {
+    "id": "ana-laura-microfisioterapeuta-43b38b",
+    "nome": "Ana Laura - Microfisioterapeuta"
+  },
+  {
+    "id": "laboratorio-pilon-f063a4",
+    "nome": "Laboratório Pilon",
+    "foto": "/uploads/lab-pilon-1784645822533-a790db.jpg"
+  },
+  {
+    "id": "comgroup-b1de35",
+    "nome": "Comgroup",
+    "foto": "/uploads/comgroup-1784646070138-97bf95.jpg"
+  },
+  {
+    "id": "irmas-fraternas-f16c8f",
+    "nome": "Irmãs Fraternas"
+  },
+  {
+    "id": "derco-a52d59",
+    "nome": "Derco"
+  },
+  {
+    "id": "serodio-leilao-f5a6b3",
+    "nome": "Serodio Leilão",
+    "foto": "/uploads/serodio-leilao-1784646751309-3e62bd.jpg"
+  },
+  {
+    "id": "igreja-batista-5206a4",
+    "nome": "Igreja Batista",
+    "foto": "/uploads/igreja-batista-1784646758271-9455ee.jpg"
+  },
+  {
+    "id": "art-e-danca-ballet-melina-0523d9",
+    "nome": "Art e Dança Ballet - Melina",
+    "foto": "/uploads/logo-art-e-danca-1784647096202-242bc1.png"
+  },
+  {
+    "id": "cassia-music-art-4c4ee2",
+    "nome": "Cassia - Music Art"
+  },
+  {
+    "id": "granja-yabuta-d98a9f",
+    "nome": "Granja Yabuta",
+    "foto": "/uploads/yabuta-1784647173516-0d76cb.jpg"
+  },
+  {
+    "id": "better-beef-e318a0",
+    "nome": "Better Beef",
+    "foto": "/uploads/better-beef-1784647210778-09524e.webp"
+  },
+  {
+    "id": "farmacia-do-nilton-321f8e",
+    "nome": "Farmácia do Nilton"
+  },
+  {
+    "id": "rotaract-b83110",
+    "nome": "Rotaract"
+  }
+]

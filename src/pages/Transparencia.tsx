@@ -1,28 +1,9 @@
 import AnimatedSection from "@/components/AnimatedSection";
 import PageHero from "@/components/PageHero";
 import transparenciaHero from "@/assets/transparencia2.jpg";
-import { BookOpen, ExternalLink, FileText, Lock } from "lucide-react";
-
-const documentos = [
-  {
-    nome: "Cartão CNPJ",
-    desc: "Cadastro Nacional da Pessoa Jurídica",
-    href: "/docs/CARTÃO CNPJ.pdf",
-  },
-  {
-    nome: "Ata de Alteração do Estatuto",
-    desc: "Documento institucional registrado",
-    href: "/docs/ATA DE ALTERAÇÃO ESTATUTO 06.2025.pdf",
-  },
-  {
-    nome: "Balanço Patrimonial e DRE 2025",
-    desc: "Disponibilização pendente da versão com CPFs tarjados",
-  },
-  {
-    nome: "Ata de Eleição 2025/2026",
-    desc: "Disponibilização pendente da versão com CPFs tarjados",
-  },
-];
+import { fetchPublicDocuments, groupDocumentsByCategory, type TransparencyDocument } from "@/lib/documents";
+import { BookOpen, ExternalLink, FileText } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 
 const fundamentosLegais = [
   {
@@ -40,6 +21,18 @@ const fundamentosLegais = [
 ];
 
 const Transparencia = () => {
+  const [documents, setDocuments] = useState<TransparencyDocument[]>([]);
+  const [loadingDocuments, setLoadingDocuments] = useState(true);
+
+  useEffect(() => {
+    fetchPublicDocuments()
+      .then((items) => setDocuments(items))
+      .catch(() => setDocuments([]))
+      .finally(() => setLoadingDocuments(false));
+  }, []);
+
+  const groupedDocuments = useMemo(() => groupDocumentsByCategory(documents), [documents]);
+
   return (
     <main className="pt-24">
       <PageHero
@@ -62,44 +55,51 @@ const Transparencia = () => {
             </h2>
           </AnimatedSection>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl">
-            {documentos.map((doc, i) => (
-              <AnimatedSection key={doc.nome} delay={i * 0.05}>
-                <div
-                  className={`soft-card flex items-center gap-4 p-6 transition-all duration-300 group ${
-                    doc.href ? "hover:shadow-lg" : "opacity-80"
-                  }`}
-                >
-                  <div className="w-12 h-12 rounded-xl accent-blue-bg flex items-center justify-center shrink-0">
-                    {doc.href ? (
-                      <FileText size={20} className="accent-blue-text" />
-                    ) : (
-                      <Lock size={20} className="accent-blue-text" />
-                    )}
+          {loadingDocuments ? (
+            <div className="max-w-4xl rounded-lg border bg-white p-8 text-center text-muted-foreground">
+              Carregando documentos...
+            </div>
+          ) : groupedDocuments.length === 0 ? (
+            <div className="soft-card max-w-4xl p-8 text-center text-muted-foreground">
+              Nenhum documento publicado no momento.
+            </div>
+          ) : (
+            <div className="max-w-5xl space-y-10">
+              {groupedDocuments.map((group, groupIndex) => (
+                <AnimatedSection key={group.categoria} delay={groupIndex * 0.06}>
+                  <div>
+                    <h3 className="mb-4 flex items-center gap-3 text-display text-2xl font-semibold text-foreground">
+                      <span className="flex h-11 w-11 items-center justify-center rounded-xl accent-blue-bg">
+                        <group.icon size={20} className="accent-blue-text" />
+                      </span>
+                      {group.categoria}
+                    </h3>
+
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                      {group.items.map((doc) => (
+                        <a
+                          key={doc.id}
+                          href={doc.arquivo}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="soft-card group flex items-center gap-4 p-6 transition-all duration-300 hover:shadow-lg"
+                        >
+                          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl accent-blue-bg">
+                            <FileText size={20} className="accent-blue-text" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="break-words font-medium text-foreground">{doc.nome}</p>
+                            <p className="text-base text-muted-foreground">{doc.data}</p>
+                          </div>
+                          <ExternalLink size={16} className="shrink-0 text-foreground transition-transform group-hover:translate-x-1" />
+                        </a>
+                      ))}
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <p className="text-foreground font-medium">{doc.nome}</p>
-                    <p className="text-base text-muted-foreground">{doc.desc}</p>
-                  </div>
-                  {doc.href ? (
-                    <a
-                      href={doc.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-base font-medium text-foreground hover:underline"
-                    >
-                      Abrir
-                      <ExternalLink size={16} />
-                    </a>
-                  ) : (
-                    <span className="text-sm font-medium text-muted-foreground">
-                      Em revisão
-                    </span>
-                  )}
-                </div>
-              </AnimatedSection>
-            ))}
-          </div>
+                </AnimatedSection>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

@@ -4,11 +4,29 @@ import fachada from "@/assets/fachada.jpeg";
 import heroBg from "@/assets/hero-bg.jpg";
 import logo from "@/assets/logo-remove-bg.png";
 import AnimatedSection from "@/components/AnimatedSection";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+  type CarouselApi,
+} from "@/components/ui/carousel";
+import { fetchPublicFaq, type FaqItem } from "@/lib/faq";
 import { fetchPublicNews, type NewsSummary } from "@/lib/news";
+import { fetchPublicPartners, type Partner } from "@/lib/partners";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
+  Building2,
   Calendar,
+  CircleHelp,
   FileText,
   Heart,
   Home,
@@ -17,7 +35,7 @@ import {
   Newspaper,
   Shield,
   Star,
-  Users,
+  Users
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -87,12 +105,78 @@ const formatNewsDate = (date: string) => {
   });
 };
 
+const PartnerItem = ({ partner }: { partner: Partner }) => {
+  const content = (
+    <>
+      <div className="mb-5 flex h-36 w-full items-center justify-center">
+        {partner.foto ? (
+          <img
+            src={partner.foto}
+            alt={partner.nome}
+            loading="lazy"
+            decoding="async"
+            className="max-h-32 max-w-[220px] object-contain transition-transform duration-300 group-hover:scale-105"
+          />
+        ) : (
+          <div className="flex h-28 w-28 items-center justify-center rounded-full accent-blue-bg transition-transform duration-300 group-hover:scale-105">
+            <Building2 size={42} className="accent-blue-text" />
+          </div>
+        )}
+      </div>
+      <h3 className="line-clamp-2 text-lg font-semibold leading-snug text-foreground md:text-xl">
+        {partner.nome}
+      </h3>
+    </>
+  );
+
+  const className =
+    "group flex min-h-56 flex-col items-center justify-center rounded-2xl p-5 text-center opacity-80 transition-all duration-300 hover:-translate-y-1 hover:bg-card/70 hover:opacity-100";
+
+  if (partner.link) {
+    return (
+      <a
+        href={partner.link}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={className}
+        aria-label={`Acessar site de ${partner.nome}`}
+      >
+        {content}
+      </a>
+    );
+  }
+
+  return <div className={className}>{content}</div>;
+};
+
 const Index = () => {
   const [noticias, setNoticias] = useState<NewsSummary[]>([]);
+  const [partners, setPartners] = useState<Partner[]>([]);
+  const [partnersCarouselApi, setPartnersCarouselApi] = useState<CarouselApi | null>(null);
+  const [faqItems, setFaqItems] = useState<FaqItem[]>([]);
 
   useEffect(() => {
     fetchPublicNews().then((posts) => setNoticias(posts.slice(0, 3)));
+    fetchPublicPartners().then(setPartners);
+    fetchPublicFaq().then(setFaqItems);
   }, []);
+
+  useEffect(() => {
+    if (!partnersCarouselApi || partners.length < 2) return;
+
+    const interval = window.setInterval(() => {
+      if (document.hidden) return;
+
+      if (partnersCarouselApi.canScrollNext()) {
+        partnersCarouselApi.scrollNext();
+        return;
+      }
+
+      partnersCarouselApi.scrollTo(0);
+    }, 1500);
+
+    return () => window.clearInterval(interval);
+  }, [partnersCarouselApi, partners.length]);
 
   return (
     <main>
@@ -378,8 +462,50 @@ const Index = () => {
         </div>
       </section>
 
+      {partners.length > 0 && (
+        <section className="section-padding bg-secondary">
+          <div className="container-wide">
+            <AnimatedSection>
+              <div className="mx-auto mb-14 max-w-3xl text-center">
+                <p className="mb-6 text-sm uppercase tracking-[0.3em] text-muted-foreground">
+                  Rede de apoio
+                </p>
+                <h2 className="editorial-title text-foreground">
+                  Nossos <span className="accent-blue-text italic">parceiros</span>
+                </h2>
+              </div>
+            </AnimatedSection>
+
+            <AnimatedSection delay={0.1}>
+              <Carousel
+                setApi={setPartnersCarouselApi}
+                opts={{
+                  align: "start",
+                  loop: partners.length > 3,
+                }}
+                className="mx-auto max-w-6xl"
+              >
+                <CarouselContent className="-ml-4">
+                  {partners.map((partner) => (
+                    <CarouselItem key={partner.id} className="pl-4 sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+                      <PartnerItem partner={partner} />
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                {partners.length > 3 && (
+                  <>
+                    <CarouselPrevious className="left-0 top-[calc(100%+1.5rem)] translate-y-0 md:-left-12 md:top-1/2 md:-translate-y-1/2" />
+                    <CarouselNext className="right-0 top-[calc(100%+1.5rem)] translate-y-0 md:-right-12 md:top-1/2 md:-translate-y-1/2" />
+                  </>
+                )}
+              </Carousel>
+            </AnimatedSection>
+          </div>
+        </section>
+      )}
+
       {/* ÚLTIMAS NOTÍCIAS */}
-      <section className="section-padding bg-secondary">
+      <section className={`section-padding ${partners.length > 0 ? "bg-background" : "bg-secondary"}`}>
         <div className="container-wide">
           <AnimatedSection>
             <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-16">
@@ -509,6 +635,45 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {faqItems.length > 0 && (
+        <section className="section-padding bg-background">
+          <div className="container-narrow">
+            <AnimatedSection>
+              <div className="mb-12 text-center">
+                <p className="mb-6 text-sm uppercase tracking-[0.3em] text-muted-foreground">
+                  Dúvidas comuns
+                </p>
+                <h2 className="editorial-title text-foreground">
+                  Perguntas <span className="accent-yellow-text italic">frequentes</span>
+                </h2>
+              </div>
+            </AnimatedSection>
+
+            <AnimatedSection delay={0.1}>
+              <Accordion type="single" collapsible className="soft-card divide-y divide-border p-2 md:p-4">
+                {faqItems.map((item) => (
+                  <AccordionItem key={item.id} value={item.id} className="border-0 px-4">
+                    <AccordionTrigger className="gap-4 py-7 text-left text-display text-[1.35rem] font-semibold leading-snug hover:no-underline md:text-2xl">
+                      <span className="flex items-center gap-4">
+                        <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl accent-yellow-bg">
+                          <CircleHelp size={18} className="accent-yellow-text" />
+                        </span>
+                        <span>
+                          {item.pergunta}
+                        </span>
+                      </span>
+                    </AccordionTrigger>
+                    <AccordionContent className="pl-0 text-lg leading-relaxed text-muted-foreground sm:pl-[4.25rem] md:text-xl">
+                      <p className="whitespace-pre-line">{item.resposta}</p>
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </AnimatedSection>
+          </div>
+        </section>
+      )}
 
       {/* QUICK CONTACT */}
       <section className="section-padding bg-primary text-primary-foreground">

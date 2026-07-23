@@ -107,8 +107,6 @@ export function NewsDialog({ open, onOpenChange, editingNews, onSuccess }: NewsD
   const editorRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
-  const MAX_CONTEUDO_LENGTH = 100000;
-
   function juntarConteudos(news: NewsPost & { conteudo2?: string; conteudo3?: string }) {
     return [
       news?.conteudo,
@@ -173,9 +171,7 @@ export function NewsDialog({ open, onOpenChange, editingNews, onSuccess }: NewsD
   }, [open, editorMode, editingNews, formData.conteudo]);
 
   const updateConteudo = (value: string) => {
-    if (value.length <= MAX_CONTEUDO_LENGTH) {
-      setFormData(prev => ({ ...prev, conteudo: value }));
-    }
+    setFormData(prev => ({ ...prev, conteudo: value }));
   };
 
   const syncEditorContent = () => {
@@ -420,17 +416,6 @@ export function NewsDialog({ open, onOpenChange, editingNews, onSuccess }: NewsD
     e.preventDefault();
     setLoading(true);
 
-    // Validação de tamanho
-    if (formData.conteudo.length > MAX_CONTEUDO_LENGTH) {
-      toast({
-        title: "Conteúdo muito grande",
-        description: `O texto ultrapassa o limite de ${MAX_CONTEUDO_LENGTH} caracteres.`,
-        variant: "destructive",
-      });
-      setLoading(false);
-      return;
-    }
-
     try {
       const {
         data: { session },
@@ -529,7 +514,7 @@ export function NewsDialog({ open, onOpenChange, editingNews, onSuccess }: NewsD
             <Label>
               Conteúdo Completo
               <span className="ml-2 text-xs text-muted-foreground">
-                ({formData.conteudo.length}/{MAX_CONTEUDO_LENGTH})
+                ({formData.conteudo.length} caracteres)
               </span>
             </Label>
 
@@ -612,12 +597,6 @@ export function NewsDialog({ open, onOpenChange, editingNews, onSuccess }: NewsD
                 />
               )}
             </div>
-
-            {formData.conteudo.length >= MAX_CONTEUDO_LENGTH && (
-              <p className="text-xs text-destructive">
-                Limite máximo de {MAX_CONTEUDO_LENGTH} caracteres atingido.
-              </p>
-            )}
           </div>
 
 

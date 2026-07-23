@@ -1,63 +1,110 @@
 import AnimatedSection from "@/components/AnimatedSection";
 import PageHero from "@/components/PageHero";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import careImg from "@/assets/care.jpg";
 import aboutImg from "@/assets/about-activities.jpg";
 import fachadaImg from "@/assets/fachada.jpeg";
+import { fetchPublicTeam, groupTeamByArea, initialTeam, type TeamMember } from "@/lib/team";
 import { Heart, Shield, Users, Home, Star } from "lucide-react";
-
-const diretoria = [
-  { nome: "Érica Cristina Chezini Mellotti", cargo: "Presidente" },
-  { nome: "Érica Maria Acorsi Lima", cargo: "Vice Presidente" },
-  { nome: "Juliana Fernanda Gemente Thomé", cargo: "Secretária" },
-  { nome: "Natanael Jose Ribeiro", cargo: "Tesoureiro" },
-  { nome: "Cleide Delattore Nunes", cargo: "Diretor de Patrimônio" },
-  { nome: "Vinicius Ferro Roberto", cargo: "Procurador Jurídico" },
-];
-
-const conselhoDeliberativo = [
-  { nome: "Rachel de Almeida Calvo", cargo: "Presidente" },
-  { nome: "Jansen Franco Branco", cargo: "Vice Presidente" },
-  { nome: "Vanessa Cristina de Oliveira", cargo: "Secretária" },
-];
-
-const conselhoFiscal = [
-  { nome: "Camila Reginato Pedro", cargo: "Conselheira" },
-  { nome: "Soraya El Gharib Jorge Estevam", cargo: "Conselheira" },
-  { nome: "Luzia Trova", cargo: "Conselheira" },
-];
-
-const colaboradores = [
-  { nome: "Júlia Maria Dos Santos", cargo: "Coordenadora" },
-  { nome: "Cristiane Lima da Silva", cargo: "Auxiliar Administrativo" },
-  { nome: "Janaina S. Vieira Da Silva", cargo: "Psicóloga Institucional" },
-  { nome: "Patrícia Altieri", cargo: "Educadora Social" },
-  { nome: "Patrícia Peixoto da Cruz", cargo: "Assistente Social" },
-  { nome: "Ana Maria Rodrigues Da Silva", cargo: "Auxiliar de Educador" },
-  { nome: "Jeane Tenorio da Silva Sumida", cargo: "Auxiliar de Educador" },
-  { nome: "Lourdes Pereira da Silva", cargo: "Auxiliar de Educador" },
-  { nome: "Maria Auxiliadora da Silva", cargo: "Auxiliar de Educador" },
-  { nome: "Maria Benedita de Oliveira Ribeiro", cargo: "Auxiliar de Educador" },
-  { nome: "Valdeli Dos Santos Souza", cargo: "Auxiliar de Educador" },
-  { nome: "Silvana Batista Moura", cargo: "Auxiliar de Cozinha" },
-  { nome: "Karina Biaggio Roca Monti", cargo: "Nutricionista" },
-];
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 const getInitials = (name: string) =>
   name.split(" ").map(n => n[0]).filter(Boolean).slice(0, 2).join("").toUpperCase();
 
-const getRoleColor = (cargo: string) => {
-  if (cargo.includes("Coordenadora") || cargo.includes("Presidente")) return "from-accent-yellow to-accent-yellow/60";
-  if (cargo.includes("Psicólog") || cargo.includes("Assistente") || cargo.includes("Educador")) return "from-accent-pink to-accent-pink/60";
+const getRoleColor = (member: TeamMember) => {
+  if (member.area.includes("Diretoria") || member.cargo.includes("Coordenadora")) return "from-accent-yellow to-accent-yellow/60";
+  if (member.area.includes("Fiscal") || member.cargo.includes("Psicólog") || member.cargo.includes("Assistente") || member.cargo.includes("Educador")) return "from-accent-pink to-accent-pink/60";
   return "from-accent-blue to-accent-blue/60";
 };
 
-const getRoleBg = (cargo: string) => {
-  if (cargo.includes("Coordenadora") || cargo.includes("Presidente")) return "accent-yellow-bg";
-  if (cargo.includes("Psicólog") || cargo.includes("Assistente") || cargo.includes("Educador")) return "accent-pink-bg";
+const getRoleBg = (member: TeamMember) => {
+  if (member.area.includes("Diretoria") || member.cargo.includes("Coordenadora")) return "accent-yellow-bg";
+  if (member.area.includes("Fiscal") || member.cargo.includes("Psicólog") || member.cargo.includes("Assistente") || member.cargo.includes("Educador")) return "accent-pink-bg";
   return "accent-blue-bg";
 };
 
+const getAreaLineColor = (area: string) => {
+  if (area.includes("Diretoria")) return "bg-accent-yellow";
+  if (area.includes("Fiscal")) return "bg-accent-pink";
+  return "bg-accent-blue";
+};
+
+const TeamCard = ({
+  member,
+  compact = false,
+  onPhotoClick,
+}: {
+  member: TeamMember;
+  compact?: boolean;
+  onPhotoClick: (member: TeamMember) => void;
+}) => (
+  <div className={`soft-card relative group overflow-hidden ${compact ? "p-5" : "p-6"} transition-all duration-500 hover:shadow-xl`}>
+    <div className={`absolute left-0 top-0 h-1 w-full bg-gradient-to-r ${getRoleColor(member)}`} />
+    <div className="flex items-center gap-4">
+      {member.foto ? (
+        <button
+          type="button"
+          className={`${compact ? "h-12 w-12 rounded-xl" : "h-14 w-14 rounded-2xl"} shrink-0 overflow-hidden cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2`}
+          onClick={() => onPhotoClick(member)}
+          aria-label={`Ampliar foto de ${member.nome}`}
+          title={`Ampliar foto de ${member.nome}`}
+        >
+          <img
+            src={member.foto}
+            alt={member.nome}
+            loading="lazy"
+            decoding="async"
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+        </button>
+      ) : (
+        <div className={`${compact ? "h-12 w-12 rounded-xl" : "h-14 w-14 rounded-2xl"} ${getRoleBg(member)} flex shrink-0 items-center justify-center transition-transform duration-300 group-hover:scale-105`}>
+          <span className={`text-foreground ${compact ? "text-xs" : "text-sm"} font-bold`}>
+            {getInitials(member.nome)}
+          </span>
+        </div>
+      )}
+      <div className="min-w-0">
+        <p className={`break-words text-foreground ${compact ? "text-sm" : ""} font-semibold`}>
+          {member.nome}
+        </p>
+        <p className={`text-muted-foreground ${compact ? "text-xs" : "text-sm"}`}>{member.cargo}</p>
+      </div>
+    </div>
+  </div>
+);
+
 const Sobre = () => {
+  const [equipe, setEquipe] = useState<TeamMember[]>(initialTeam);
+  const [selectedPhotoMember, setSelectedPhotoMember] = useState<TeamMember | null>(null);
+
+  const loadTeam = useCallback(() => {
+    fetchPublicTeam()
+      .then((team) => {
+        if (team.length > 0) setEquipe(team);
+      })
+      .catch(() => undefined);
+  }, []);
+
+  useEffect(() => {
+    loadTeam();
+
+    const handleFocus = () => loadTeam();
+    const handleVisibilityChange = () => {
+      if (!document.hidden) loadTeam();
+    };
+
+    window.addEventListener("focus", handleFocus);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [loadTeam]);
+
+  const equipePorArea = useMemo(() => groupTeamByArea(equipe), [equipe]);
+
   return (
     <main className="pt-24">
       <PageHero
@@ -218,7 +265,7 @@ const Sobre = () => {
         </div>
       </section>
 
-      {/* EQUIPE - Diretoria */}
+      {/* Team */}
       <section className="section-padding">
         <div className="container-wide">
           <AnimatedSection>
@@ -232,115 +279,62 @@ const Sobre = () => {
             </div>
           </AnimatedSection>
 
-          {/* Diretoria */}
-          <AnimatedSection>
-            <h3 className="text-display text-2xl font-semibold text-foreground mb-10 flex items-center gap-3">
-              <div className="w-8 h-1 bg-accent-yellow rounded-full" />
-              Diretoria
-            </h3>
-          </AnimatedSection>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-20">
-            {diretoria.map((p, i) => (
-              <AnimatedSection key={p.nome} delay={i * 0.05}>
-                <div className="soft-card relative group overflow-hidden p-6 transition-all duration-500 hover:shadow-xl">
-                  <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${getRoleColor(p.cargo)}`} />
-                  <div className="flex items-center gap-4">
-                    <div className={`w-14 h-14 rounded-2xl ${getRoleBg(p.cargo)} flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300`}>
-                      <span className="text-foreground text-sm font-bold">{getInitials(p.nome)}</span>
-                    </div>
-                    <div>
-                      <p className="text-foreground font-semibold">{p.nome}</p>
-                      <p className="text-muted-foreground text-sm">{p.cargo}</p>
-                    </div>
+          <div className="space-y-20">
+            {equipePorArea.map((grupo) => {
+              const compact = grupo.membros.length <= 3;
+              return (
+                <div key={grupo.area}>
+                  <AnimatedSection>
+                    <h3 className="mb-10 flex items-center gap-3 text-display text-2xl font-semibold text-foreground">
+                      <div className={`h-1 w-8 rounded-full ${getAreaLineColor(grupo.area)}`} />
+                      {grupo.area}
+                    </h3>
+                  </AnimatedSection>
+                  <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+                    {grupo.membros.map((member, index) => (
+                      <AnimatedSection key={member.id} delay={index * 0.04}>
+                        <TeamCard
+                          member={member}
+                          compact={compact}
+                          onPhotoClick={setSelectedPhotoMember}
+                        />
+                      </AnimatedSection>
+                    ))}
                   </div>
                 </div>
-              </AnimatedSection>
-            ))}
-          </div>
-
-          {/* Conselhos side by side */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-20">
-            <div>
-              <AnimatedSection>
-                <h3 className="text-display text-2xl font-semibold text-foreground mb-10 flex items-center gap-3">
-                  <div className="w-8 h-1 bg-accent-blue rounded-full" />
-                  Conselho Deliberativo
-                </h3>
-              </AnimatedSection>
-              <div className="space-y-4">
-                {conselhoDeliberativo.map((p, i) => (
-                  <AnimatedSection key={p.nome} delay={i * 0.05}>
-                    <div className="soft-card relative group overflow-hidden p-5 transition-all duration-500 hover:shadow-xl">
-                      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent-blue to-accent-blue/60" />
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl accent-blue-bg flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300">
-                          <span className="text-foreground text-xs font-bold">{getInitials(p.nome)}</span>
-                        </div>
-                        <div>
-                          <p className="text-foreground font-semibold text-sm">{p.nome}</p>
-                          <p className="text-muted-foreground text-xs">{p.cargo}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </AnimatedSection>
-                ))}
-              </div>
-            </div>
-            <div>
-              <AnimatedSection>
-                <h3 className="text-display text-2xl font-semibold text-foreground mb-10 flex items-center gap-3">
-                  <div className="w-8 h-1 bg-accent-pink rounded-full" />
-                  Conselho Fiscal
-                </h3>
-              </AnimatedSection>
-              <div className="space-y-4">
-                {conselhoFiscal.map((p, i) => (
-                  <AnimatedSection key={p.nome} delay={i * 0.05}>
-                    <div className="soft-card relative group overflow-hidden p-5 transition-all duration-500 hover:shadow-xl">
-                      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent-pink to-accent-pink/60" />
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl accent-pink-bg flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300">
-                          <span className="text-foreground text-xs font-bold">{getInitials(p.nome)}</span>
-                        </div>
-                        <div>
-                          <p className="text-foreground font-semibold text-sm">{p.nome}</p>
-                          <p className="text-muted-foreground text-xs">{p.cargo}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </AnimatedSection>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Colaboradores */}
-          <AnimatedSection>
-            <h3 className="text-display text-2xl font-semibold text-foreground mb-10 flex items-center gap-3">
-              <div className="w-8 h-1 bg-accent-blue rounded-full" />
-              Colaboradores
-            </h3>
-          </AnimatedSection>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {colaboradores.map((p, i) => (
-              <AnimatedSection key={p.nome} delay={i * 0.03}>
-                <div className="soft-card relative group overflow-hidden p-5 transition-all duration-500 hover:shadow-lg">
-                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent-blue to-accent-blue/60" />
-                  <div className="flex items-center gap-4">
-                    <div className="w-11 h-11 rounded-xl accent-blue-bg flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300">
-                      <span className="text-foreground text-xs font-bold">{getInitials(p.nome)}</span>
-                    </div>
-                    <div>
-                      <p className="text-foreground font-medium text-sm">{p.nome}</p>
-                      <p className="text-muted-foreground text-xs">{p.cargo}</p>
-                    </div>
-                  </div>
-                </div>
-              </AnimatedSection>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
+
+      <Dialog
+        open={!!selectedPhotoMember}
+        onOpenChange={(open) => {
+          if (!open) setSelectedPhotoMember(null);
+        }}
+      >
+        <DialogContent className="max-w-[min(92vw,760px)] border-0 bg-transparent p-0 shadow-none [&>button]:right-3 [&>button]:top-3 [&>button]:rounded-full [&>button]:bg-white/90 [&>button]:p-2 [&>button]:text-foreground">
+          <DialogTitle className="sr-only">
+            {selectedPhotoMember ? `Foto de ${selectedPhotoMember.nome}` : "Foto ampliada"}
+          </DialogTitle>
+          {selectedPhotoMember?.foto && (
+            <div className="overflow-hidden rounded-lg bg-background shadow-2xl">
+              <div className="bg-black">
+                <img
+                  src={selectedPhotoMember.foto}
+                  alt={selectedPhotoMember.nome}
+                  className="max-h-[78vh] w-full object-contain"
+                />
+              </div>
+              <div className="p-4">
+                <p className="font-semibold text-foreground">{selectedPhotoMember.nome}</p>
+                <p className="text-sm text-muted-foreground">{selectedPhotoMember.cargo}</p>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </main>
   );
 };
